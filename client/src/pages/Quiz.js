@@ -31,6 +31,8 @@ const Quiz = ({location, match}) => {
   const [isQuiz, setIsQuiz] = useState(true);
   const room = 'quiz';
 
+  // TODO 퀴즈 부분 다시 손 볼 것.
+
   useEffect(() => {
     const {arrival, animal} = queryString.parse(location.search);
 
