@@ -1,16 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
-import {Link} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
 let socket;
 
 const Chat = ({location, match}) => {
   const {station} = match.params;
+  let history = useHistory();
   const [animal, setAnimal] = useState('');
   const [arrival, setArrival] = useState('');
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [countdown, setCountdown] = useState(null);
   const room = 'chat';
   const ENDPOINT = 'localhost:5000';
 
@@ -26,11 +28,11 @@ const Chat = ({location, match}) => {
       if(error) {
         alert(error);
       }
-    })
+    }) 
 
     return () => {
-      socket.emit('Disconnect from Chat');
-      socket.off();
+      console.log('disconnect from Chat');
+      socket.disconnect();
     }
   }, [ENDPOINT, location.search])
 
@@ -39,6 +41,18 @@ const Chat = ({location, match}) => {
       setMessages([...messages, message]);
     })
   }, [messages])
+
+  useEffect(() => {
+    socket.on('countdown', (count) => {
+      setCountdown(count);
+    })
+  }, [])
+
+  useEffect(() => {
+    if(countdown === 0){
+      history.push(`/${station}/quiz?animal=${animal}&arrival=${arrival}`);
+    }
+  }, [countdown])
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -62,9 +76,10 @@ const Chat = ({location, match}) => {
       />
       <button onClick={e => sendMessage(e)}>Send</button>
     </form>
-    <Link to={`/${station}/quiz?animal=${animal}&arrival=${arrival}`}>
+    <div>count: {countdown}</div>
+    {/* <Link to={`/${station}/quiz?animal=${animal}&arrival=${arrival}`}>
       <button>Go to Quiz!</button>
-    </Link>
+    </Link> */}
     </>
   )
 }

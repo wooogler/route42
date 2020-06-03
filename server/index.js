@@ -5,13 +5,11 @@ const cors = require('cors');
 
 const PORT = process.env.PORT || 5000;
 
-const {addUser, removeUser ,getUser} = require('./users');
+const {addUser, removeUser ,getUser, getAllUsers} = require('./users');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-
-let answers = [];
 
 io.on('connection', (socket) => {
   socket.on('join', ({animal, room}, callback) => {
@@ -19,8 +17,21 @@ io.on('connection', (socket) => {
     if(error) return callback(error);
 
     socket.join(room);
-
-    console.log(`${user.animal} come.`)
+    console.log(`${user.animal} come to ${room} room.`)
+    const joinedUser = getAllUsers();
+    console.log(joinedUser);
+    if(!joinedUser.some(user => user.animal === 'anonymous')) {
+      console.log('Start CountDown!')
+      let count = 30;
+      const countdown = setInterval(() => {
+        console.log('count:', count);
+        io.to(room).emit('countdown', count);
+        count = count - 1;
+        if(count === 0) {
+          clearInterval(countdown);
+        }
+      },1000)
+    }
 
     callback();
   })
@@ -32,13 +43,19 @@ io.on('connection', (socket) => {
     callback();
   })
 
+  let answers = [];
   socket.on('sendAnswer', ({room, answer}, callback) => {
     answers.push(answer);
+    console.log(answer);
     if(answers.length === 2) {
-      if(answers[0] === answers[1]) {
-        io.to(room).emit('markQuiz', 'right');
+      if(answers[0] === 'no answer' || answers[1] === 'no answer') {
+        io.to(room).emit('markQuiz', '한쪽에서 선택을 안했음')
       } else {
-        io.to(room).emit('markQuiz', 'wrong');
+        if(answers[0] === answers[1]) {
+          io.to(room).emit('markQuiz', '일치');
+        } else {
+          io.to(room).emit('markQuiz', '불일치');
+        }
       }
       answers = [];
     }
@@ -46,7 +63,13 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
-    console.log(`${user.animal} has left.`)
+    if(user) {
+      console.log(`${user.animal} has left.`)
+    }
+    else {
+      console.log('disconnect');
+    }
+    console.log(getAllUsers());
   })
 });
 
