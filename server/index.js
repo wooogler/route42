@@ -11,6 +11,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+let answers = ['',''];
+
 io.on('connection', (socket) => {
   socket.on('join', ({animal, room}, callback) => {
     const {error, user} = addUser({id: socket.id, animal})
@@ -53,9 +55,7 @@ io.on('connection', (socket) => {
     callback();
   })
 
-  let answers = ['',''];
   socket.on('sendAnswer', ({room, choice, station}, callback) => {
-    console.log(answers);
     if(station === 'station1') {
       answers[0] = choice;
     } else if(station === 'station2') {
@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
     } else {
       console.log('station name is only station1 or station2');
     }
+    console.log(answers);
     if(answers[0] === '' || answers[1] === '') {
       io.to(room).emit('markQuiz', '한쪽에서 선택을 안했음');
     } else {

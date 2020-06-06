@@ -62,11 +62,14 @@ const Quiz = ({location, match}) => {
   }, [])
 
   useEffect(() => {
+    socket.on('markQuiz', (mark) => {
+      setMarked(mark);
+    })
     if(time === 3) {
       setIsQuiz(false);
-      socket.on('markQuiz', (mark) => {
-        setMarked(mark);
-      })
+      if(choice==='') {
+        socket.emit('sendAnswer', {room, choice: '', station});
+      }
     }
     if(time === -1) {
       setTime(8);
