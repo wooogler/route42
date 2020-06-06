@@ -31,7 +31,6 @@ const Chat = ({location, match}) => {
     }) 
 
     return () => {
-      console.log('disconnect from Chat');
       socket.disconnect();
     }
   }, [ENDPOINT, location.search])
@@ -77,9 +76,6 @@ const Chat = ({location, match}) => {
       <button onClick={e => sendMessage(e)}>Send</button>
     </form>
     <div>count: {countdown}</div>
-    {/* <Link to={`/${station}/quiz?animal=${animal}&arrival=${arrival}`}>
-      <button>Go to Quiz!</button>
-    </Link> */}
     </>
   )
 }

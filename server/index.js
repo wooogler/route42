@@ -20,20 +20,30 @@ io.on('connection', (socket) => {
     console.log(`${user.animal} come to ${room} room.`)
     const joinedUser = getAllUsers();
     console.log(joinedUser);
-    if(!joinedUser.some(user => user.animal === 'anonymous')) {
-      console.log('Start CountDown!')
-      let count = 30;
-      const countdown = setInterval(() => {
-        console.log('count:', count);
-        io.to(room).emit('countdown', count);
-        count = count - 1;
-        if(count === 0) {
-          clearInterval(countdown);
-        }
-      },1000)
+    if(room == 'chat') {
+      if(joinedUser.length===2 && 
+        joinedUser[0].animal !== 'anonymous' && 
+        joinedUser[1].animal !== 'anonymous') {
+        console.log('Start CountDown!')
+        let count = 30;
+        const countdown = setInterval(() => {
+          console.log('count:', count);
+          io.to(room).emit('countdown', count);
+          count = count - 1;
+          if(count === -1) {
+            clearInterval(countdown);
+          }
+        },1000)
+      }
+    } else if (room == 'quiz') {
+      if(joinedUser.length == 2) {
+        console.log('Start Quiz')
+      }
+    } else {
+      callback('room error');
     }
-
-    callback();
+    
+    
   })
 
   socket.on('sendMessage', ({room, message}, callback) => {
@@ -44,14 +54,15 @@ io.on('connection', (socket) => {
   })
 
   let answers = [];
-  socket.on('sendAnswer', ({room, answer}, callback) => {
-    answers.push(answer);
-    console.log(answer);
+  socket.on('sendAnswer', ({room, choice}, callback) => {
+    const user = getUser(socket.id);
+    answers.push({animal: user.animal, choice})
+    console.log(answers);
     if(answers.length === 2) {
-      if(answers[0] === 'no answer' || answers[1] === 'no answer') {
+      if(answers[0].choice || answers[1].choice) {
         io.to(room).emit('markQuiz', '한쪽에서 선택을 안했음')
       } else {
-        if(answers[0] === answers[1]) {
+        if(answers[0].choice === answers[1].choice) {
           io.to(room).emit('markQuiz', '일치');
         } else {
           io.to(room).emit('markQuiz', '불일치');

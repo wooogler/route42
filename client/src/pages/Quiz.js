@@ -24,14 +24,13 @@ const Quiz = ({location, match}) => {
   const ENDPOINT = 'localhost:5000';
   const [animal, setAnimal] = useState('');
   const [arrival, setArrival] = useState('');
+  const [choice, setChoice] = useState('');
   const [answer, setAnswer] = useState('no answer');
   const [marked, setMarked] = useState('');
   const [quizIndex, setQuizIndex] = useState(0);
   const [time, setTime] = useState(13);
   const [isQuiz, setIsQuiz] = useState(true);
   const room = 'quiz';
-
-  // TODO 퀴즈 부분 다시 손 볼 것.
 
   useEffect(() => {
     const {arrival, animal} = queryString.parse(location.search);
@@ -48,8 +47,7 @@ const Quiz = ({location, match}) => {
     })
 
     return () => {
-      socket.emit('disconnect');
-      socket.off();
+      socket.disconnect();
     }
   }, [ENDPOINT, location.search])
 
@@ -66,7 +64,7 @@ const Quiz = ({location, match}) => {
   useEffect(() => {
     if(time === 3) {
       setIsQuiz(false);
-      socket.emit('sendAnswer', {room, answer});
+      socket.emit('sendAnswer', {room, choice});
       socket.on('markQuiz', (mark) => {
         setMarked(mark);
       })
@@ -75,13 +73,9 @@ const Quiz = ({location, match}) => {
       setTime(8);
       setIsQuiz(true);
       setQuizIndex(state => state+1);
-      setAnswer('no answer');
+      setChoice('');
     }
   }, [time])
-
-  const handleRadioQuiz = (e) => {
-    setAnswer(e.target.value);
-  }
 
   return (
     <div>
@@ -92,8 +86,8 @@ const Quiz = ({location, match}) => {
       }
       <div>{time}</div>
       
-      <Problem problem={problems[quizIndex]} handleRadioQuiz={handleRadioQuiz} />
-      <div>선택: {answer}</div>
+      <Problem problem={problems[quizIndex]} choice={choice} setChoice={setChoice} />
+      <div>선택: {choice}</div>
       {
         isQuiz ? 
         null : 
