@@ -2,15 +2,7 @@ import React from 'react'
 import styled from 'styled-components';
 import {Button} from 'antd';
 
-const Problem = ({problem, choice, setChoice}) => {
-
-  const handleClickA = () => {
-    setChoice('a');
-  }
-
-  const handleClickB = () => {
-    setChoice('b');
-  }
+const Problem = ({problem, choice, setChoice, handleClickA, handleClickB}) => {
 
   return (
     <div>

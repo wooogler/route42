@@ -64,7 +64,6 @@ const Quiz = ({location, match}) => {
   useEffect(() => {
     if(time === 3) {
       setIsQuiz(false);
-      socket.emit('sendAnswer', {room, choice});
       socket.on('markQuiz', (mark) => {
         setMarked(mark);
       })
@@ -76,6 +75,16 @@ const Quiz = ({location, match}) => {
       setChoice('');
     }
   }, [time])
+  
+  const handleClickA = () => {
+    setChoice('a');
+    socket.emit('sendAnswer', {room, choice:'a', station});
+  }
+
+  const handleClickB = () => {
+    socket.emit('sendAnswer', {room, choice:'b', station});
+    setChoice('b');
+  }
 
   return (
     <div>
@@ -86,7 +95,13 @@ const Quiz = ({location, match}) => {
       }
       <div>{time}</div>
       
-      <Problem problem={problems[quizIndex]} choice={choice} setChoice={setChoice} />
+      <Problem 
+        problem={problems[quizIndex]} 
+        choice={choice} 
+        setChoice={setChoice} 
+        handleClickA={handleClickA}
+        handleClickB={handleClickB}
+      />
       <div>선택: {choice}</div>
       {
         isQuiz ? 

@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
         joinedUser[0].animal !== 'anonymous' && 
         joinedUser[1].animal !== 'anonymous') {
         console.log('Start CountDown!')
-        let count = 30;
+        let count = 5;
         const countdown = setInterval(() => {
           console.log('count:', count);
           io.to(room).emit('countdown', count);
@@ -53,22 +53,24 @@ io.on('connection', (socket) => {
     callback();
   })
 
-  let answers = [];
-  socket.on('sendAnswer', ({room, choice}, callback) => {
-    const user = getUser(socket.id);
-    answers.push({animal: user.animal, choice})
+  let answers = ['',''];
+  socket.on('sendAnswer', ({room, choice, station}, callback) => {
     console.log(answers);
-    if(answers.length === 2) {
-      if(answers[0].choice || answers[1].choice) {
-        io.to(room).emit('markQuiz', '한쪽에서 선택을 안했음')
+    if(station === 'station1') {
+      answers[0] = choice;
+    } else if(station === 'station2') {
+      answers[1] = choice;
+    } else {
+      console.log('station name is only station1 or station2');
+    }
+    if(answers[0] === '' || answers[1] === '') {
+      io.to(room).emit('markQuiz', '한쪽에서 선택을 안했음');
+    } else {
+      if(answers[0] === answers[1]) {
+        io.to(room).emit('markQuiz', '일치');
       } else {
-        if(answers[0].choice === answers[1].choice) {
-          io.to(room).emit('markQuiz', '일치');
-        } else {
-          io.to(room).emit('markQuiz', '불일치');
-        }
+        io.to(room).emit('markQuiz', '불일치');
       }
-      answers = [];
     }
   })
 
