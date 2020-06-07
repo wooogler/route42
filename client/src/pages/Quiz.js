@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
+import {useHistory} from 'react-router-dom';
 
 import Problem from '../components/Problem'
 
@@ -19,13 +20,13 @@ const problems = [
   {q: 'q10', a: 'a10', b: 'b10'},
 ]
 
-const Quiz = ({location, match}) => {
+const Quiz = ({location, match, setResult}) => {
+  let history = useHistory();
   const {station} = match.params;
   const ENDPOINT = 'localhost:5000';
   const [animal, setAnimal] = useState('');
   const [arrival, setArrival] = useState('');
   const [choice, setChoice] = useState('');
-  const [answer, setAnswer] = useState('no answer');
   const [marked, setMarked] = useState('');
   const [quizIndex, setQuizIndex] = useState(0);
   const [time, setTime] = useState(13);
@@ -76,8 +77,16 @@ const Quiz = ({location, match}) => {
       setIsQuiz(true);
       setQuizIndex(state => state+1);
       setChoice('');
+      setResult(state => [...state, marked]);
     }
   }, [time])
+
+  useEffect(() => {
+    console.log(quizIndex);
+    if(quizIndex === 10) {
+      history.push(`/${station}/result?animal=${animal}&arrival=${arrival}`);
+    }
+  }, [quizIndex]);
   
   const handleClickA = () => {
     setChoice('a');

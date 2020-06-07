@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
         joinedUser[0].animal !== 'anonymous' && 
         joinedUser[1].animal !== 'anonymous') {
         console.log('Start CountDown!')
-        let count = 5;
+        let count = 30;
         const countdown = setInterval(() => {
           console.log('count:', count);
           io.to(room).emit('countdown', count);
