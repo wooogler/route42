@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import io from 'socket.io-client';
 
 import AnimalIcon from '../components/AnimalIcon';
+import Message from '../components/Message';
 
 let socket;
 
@@ -34,19 +35,27 @@ const Start = ({match}) => {
     })
   }, [message]);
 
+  //TODO 메시지를 보여주는 기능
+
   return (
     <Link to={`/${station}/select`} style={{textDecoration: 'none'}}>
       <PageContainer>
         <Title>ROUTE42</Title>
         <StationContainer>
-          <AnimalIconContainer>
-            <AnimalIcon animal='pig' size='350'/>
-          </AnimalIconContainer>
+          {
+            message && 
+            <>
+              <AnimalIconContainer>
+                <AnimalIcon animal={message.user} size='350'/>
+              </AnimalIconContainer>
+              <MessageContainer>
+                <Message text={message.text}/>
+              </MessageContainer>
+            </>
+          }
+          
           <StationImage src='images/station1.png'></StationImage>
         </StationContainer>
-        {
-          message !== '' && <div>{message.user}: {message.text}</div>
-        }
         <KnockText>연결하시려면</KnockText>
         <KnockText>노크해주세요</KnockText>
       </PageContainer>
@@ -73,6 +82,13 @@ const AnimalIconContainer = styled.div`
   left: 125px;
   z-index: 1;
 `;
+
+const MessageContainer = styled.div`
+  position: absolute;
+  top: 100px;
+  right: 30px;
+  z-index: 2;
+`
 
 const Title = styled.div`
   font-size: 150px;

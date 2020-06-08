@@ -1,13 +1,23 @@
-import React, {useState} from 'react'
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react'
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import AnimalIcon from '../components/AnimalIcon';
 import ArrivalIcon from '../components/ArrivalIcon';
 
 const Select = ({match}) => {
-  const {station} = match.params
+  let history = useHistory();
+  const {station} = match.params;
   const [arrival, setArrival] = useState('');
   const [animal, setAnimal] = useState('');
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    if(animal && arrival) {
+      setTimeout(()=> {
+        history.push(`/${station}/chat?animal=${animal}&arrival=${arrival}`)
+      }, 1000)
+    }
+  }, [animal, arrival])
 
   const handleClickGangnam = () => setArrival('gangnam');
   const handleClickSinnonhyeon = () => setArrival('sinnonhyeon');

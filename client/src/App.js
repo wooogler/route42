@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-// import 'antd/dist/antd.css';
+import 'antd/dist/antd.css';
 import './styles/css/font.css';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
