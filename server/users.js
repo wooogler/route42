@@ -1,7 +1,7 @@
 const users = [];
 
-const addUser = ({id, animal}) => {
-  const user = {id, animal};
+const addUser = ({id, animal, station}) => {
+  const user = {id, animal, station};
   users.push(user);
   return {user};
 }

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const ArrivalIcon = ({checked, onClick, route, color, name}) => {
   return (
-    <ArrivalContainer checked={checked} color={color} onClick={onClick}>
+    <ArrivalContainer checked={checked} color={color} onClick={() => onClick(name)}>
       <CircleNumber color={color}>{route}</CircleNumber>
       <StationText>{name}</StationText>
     </ArrivalContainer>

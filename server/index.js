@@ -12,10 +12,11 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 let answers = ['',''];
+let countdown;
 
 io.on('connection', (socket) => {
-  socket.on('join', ({animal, room}, callback) => {
-    const {error, user} = addUser({id: socket.id, animal})
+  socket.on('join', ({animal, room, station}, callback) => {
+    const {error, user} = addUser({id: socket.id, animal, station})
     if(error) return callback(error);
 
     socket.join(room);
@@ -26,11 +27,15 @@ io.on('connection', (socket) => {
       if(joinedUser.length===2 && 
         joinedUser[0].animal !== 'anonymous' && 
         joinedUser[1].animal !== 'anonymous') {
-        console.log('Start CountDown!')
-        let count = 30;
-        const countdown = setInterval(() => {
-          console.log('count:', count);
-          io.to(room).emit('countdown', count);
+        let count = 32;
+        countdown = setInterval(() => {
+          if(count==32) {
+            io.to(room).emit('joined', joinedUser);
+          }
+          if(count<=30){
+            console.log('count:', count);
+            io.to(room).emit('countdown', count);
+          }
           count = count - 1;
           if(count === -1) {
             clearInterval(countdown);
@@ -45,12 +50,11 @@ io.on('connection', (socket) => {
       callback('room error');
     }
     
-    
   })
 
   socket.on('sendMessage', ({room, message}, callback) => {
     const user = getUser(socket.id);
-    io.to(room).emit('message', {user: user.animal, text: message});
+    io.to(room).emit('message', {user: user.animal, text: message, station: user.station});
 
     callback();
   })
@@ -79,9 +83,13 @@ io.on('connection', (socket) => {
     const user = removeUser(socket.id);
     if(user) {
       console.log(`${user.animal} has left.`)
+      
     }
     else {
       console.log('disconnect');
+    }
+    if(countdown) {
+      clearInterval(countdown);
     }
     console.log(getAllUsers());
   })

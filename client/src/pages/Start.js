@@ -35,8 +35,6 @@ const Start = ({match}) => {
     })
   }, [message]);
 
-  //TODO 메시지를 보여주는 기능
-
   return (
     <Link to={`/${station}/select`} style={{textDecoration: 'none'}}>
       <PageContainer>
@@ -49,7 +47,7 @@ const Start = ({match}) => {
                 <AnimalIcon animal={message.user} size='350'/>
               </AnimalIconContainer>
               <MessageContainer>
-                <Message text={message.text}/>
+                <Message>{message.text}</Message>
               </MessageContainer>
             </>
           }

@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Message = ({text}) => {
+const Message = ({children, onClick}) => {
   return (
-    <MessageContainer>
-      {text}
+    <MessageContainer onClick={() => onClick(children)}>
+      {children}
     </MessageContainer>
   )
 }
 
 const MessageContainer = styled.div`
   display: inline-flex;
-  padding: 5px 20px;
+  padding: 10px 25px;
   justify-content: center;
   align-items: center;
   height: 70px;
@@ -20,6 +20,7 @@ const MessageContainer = styled.div`
   font-size: 60px;
   color: white;
   border-radius: 30px;
+  margin: 10px 10px;
 `
 
 export default Message;

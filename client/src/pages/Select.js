@@ -22,18 +22,7 @@ const Select = ({match}) => {
   const handleClickGangnam = () => setArrival('gangnam');
   const handleClickSinnonhyeon = () => setArrival('sinnonhyeon');
 
-  const handleClickPig = () => setAnimal('pig');
-  const handleClickPanda =() => setAnimal('panda');
-  const handleClickGiraffe =() => setAnimal('giraffe');
-  const handleClickFox =() => setAnimal('fox');
-  const handleClickZebra =() => setAnimal('zebra');
-  const handleClickGorilla =() => setAnimal('gorilla');
-  const handleClickBear =() => setAnimal('bear');
-  const handleClickHamster =() => setAnimal('hamster');
-  const handleClickDeer =() => setAnimal('deer');
-  const handleClickRabbit =() => setAnimal('rabbit');
-  const handleClickMouse =() => setAnimal('mouse');
-  const handleClickSquid =() => setAnimal('squid');
+  const handleClickAnimal = (animal) => setAnimal(animal);
   
   return (
     <PageContainer>
@@ -47,22 +36,22 @@ const Select = ({match}) => {
       <SelectText>동물로 당신을 표현해 주세요.</SelectText>
       <AnimalContainer>
         <AnimalRow>
-          <AnimalIcon checked={animal==='pig'} onClick={handleClickPig} animal="pig" size="125"/>
-          <AnimalIcon checked={animal==='panda'} onClick={handleClickPanda} animal="panda" size="125"/>
-          <AnimalIcon checked={animal==='giraffe'} onClick={handleClickGiraffe} animal="giraffe" size="125"/>
-          <AnimalIcon checked={animal==='fox'} onClick={handleClickFox} animal="fox" size="125"/>
+          <AnimalIcon checked={animal==='pig'} onClick={handleClickAnimal} animal="pig" size="125"/>
+          <AnimalIcon checked={animal==='panda'} onClick={handleClickAnimal} animal="panda" size="125"/>
+          <AnimalIcon checked={animal==='giraffe'} onClick={handleClickAnimal} animal="giraffe" size="125"/>
+          <AnimalIcon checked={animal==='fox'} onClick={handleClickAnimal} animal="fox" size="125"/>
         </AnimalRow>
         <AnimalRow>
-          <AnimalIcon checked={animal==='zebra'} onClick={handleClickZebra} animal="zebra" size="125"/>
-          <AnimalIcon checked={animal==='gorilla'} onClick={handleClickGorilla} animal="gorilla" size="125"/>
-          <AnimalIcon checked={animal==='bear'} onClick={handleClickBear} animal="bear" size="125"/>
-          <AnimalIcon checked={animal==='hamster'} onClick={handleClickHamster} animal="hamster" size="125"/>
+          <AnimalIcon checked={animal==='zebra'} onClick={handleClickAnimal} animal="zebra" size="125"/>
+          <AnimalIcon checked={animal==='gorilla'} onClick={handleClickAnimal} animal="gorilla" size="125"/>
+          <AnimalIcon checked={animal==='bear'} onClick={handleClickAnimal} animal="bear" size="125"/>
+          <AnimalIcon checked={animal==='hamster'} onClick={handleClickAnimal} animal="hamster" size="125"/>
         </AnimalRow>
         <AnimalRow>
-          <AnimalIcon checked={animal==='deer'} onClick={handleClickDeer} animal="deer" size="125"/>
-          <AnimalIcon checked={animal==='rabbit'} onClick={handleClickRabbit} animal="rabbit" size="125"/>
-          <AnimalIcon checked={animal==='mouse'} onClick={handleClickMouse} animal="mouse" size="125"/>
-          <AnimalIcon checked={animal==='squid'} onClick={handleClickSquid} animal="squid" size="125"/>
+          <AnimalIcon checked={animal==='deer'} onClick={handleClickAnimal} animal="deer" size="125"/>
+          <AnimalIcon checked={animal==='rabbit'} onClick={handleClickAnimal} animal="rabbit" size="125"/>
+          <AnimalIcon checked={animal==='mouse'} onClick={handleClickAnimal} animal="mouse" size="125"/>
+          <AnimalIcon checked={animal==='squid'} onClick={handleClickAnimal} animal="squid" size="125"/>
         </AnimalRow>
       </AnimalContainer>
     </PageContainer>
