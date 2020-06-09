@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
       }
     } else if (room == 'quiz') {
       if(joinedUser.length == 2) {
-        console.log('Start Quiz')
+        io.to(room).emit('joined', joinedUser);
       }
     } else {
       callback('room error');

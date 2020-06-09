@@ -34,7 +34,7 @@ const Start = ({match}) => {
       setMessage(message);
     })
   }, [message]);
-
+  // TODO 채팅을 나갔을 때, 동물 사라지게 할 것
   return (
     <Link to={`/${station}/select`} style={{textDecoration: 'none'}}>
       <PageContainer>

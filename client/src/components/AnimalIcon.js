@@ -11,6 +11,7 @@ const AnimalIcon = ({animal, size, onClick, checked}) => {
 const AnimalImage = styled.img`
   width: ${(props) => `${props.checked ? props.size*2 : props.size}px`};
   height: ${(props) => `${props.checked ? props.size*2 : props.size}px`};
+  z-index: 1;
 `
 
 export default AnimalIcon;

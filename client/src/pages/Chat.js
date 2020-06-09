@@ -3,10 +3,12 @@ import styled from 'styled-components';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 import {useHistory} from 'react-router-dom';
+import Slider from "react-slick";
 import ChatViewer from '../components/ChatViewer';
 import Message from '../components/Message';
 import CloseButton from '../components/CloseButton';
 import AnimalIcon from '../components/AnimalIcon';
+import Countdown from '../components/Countdown';
 
 let socket;
 
@@ -72,6 +74,15 @@ const Chat = ({location, match}) => {
     }
   }, [message])
 
+  const settings = {
+    dots: true,
+    arrows: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    infinite: true,
+  }
+
   return (
     <PageContainer>
       <Header>
@@ -91,29 +102,68 @@ const Chat = ({location, match}) => {
         <ChatViewer messages={messages} station={station} />
         {
           countdown && 
-          <CountDown>
-            <CountDownNumber>{countdown}</CountDownNumber>
-          </CountDown>
+          <CountdownContainer>
+            <Countdown>{countdown}</Countdown>
+          </CountdownContainer>
         }
       </ChatContainer>
+      <div style={{width: '100%'}}>
+        <Slider {...settings}>
+          <div>
+            <InputContainer>
+              <Message onClick={handleClickMessage}>안녕하세요!</Message>
+              <Message onClick={handleClickMessage}>반가워요</Message>
+              <Message onClick={handleClickMessage}>행운을 빌어요</Message>
+              <Message onClick={handleClickMessage}>오늘도 화이팅!</Message>
+              <Message onClick={handleClickMessage}>고마워요</Message>
+              <Message onClick={handleClickMessage}>힘내요TT</Message>
+              <Message onClick={handleClickMessage}>^3^</Message>
+              <Message onClick={handleClickMessage}>다 잘될거에요</Message>
+              <Message onClick={handleClickMessage}>너무 피곤해요ㅜ</Message>
+              <Message onClick={handleClickMessage}>잘있어요</Message>
+              <Message onClick={handleClickMessage}>또 만나요</Message>
+              <Message onClick={handleClickMessage}>건강조심하세요!</Message>
+            </InputContainer>
+          </div>
+          <div>
+            <InputContainer>
+              <Emoji src='/images/emoji/1.png' />
+              <Emoji src='/images/emoji/2.png' />
+              <Emoji src='/images/emoji/3.png' />
+              <Emoji src='/images/emoji/4.png' />
+              <Emoji src='/images/emoji/5.png' />
+              <Emoji src='/images/emoji/6.png' />
+              <Emoji src='/images/emoji/7.png' />
+              <Emoji src='/images/emoji/8.png' />
+              <Emoji src='/images/emoji/9.png' />
+              <Emoji src='/images/emoji/10.png' />
+              <Emoji src='/images/emoji/11.png' />
+              <Emoji src='/images/emoji/12.png' />
+              <Emoji src='/images/emoji/13.png' />
+              <Emoji src='/images/emoji/14.png' />
+              <Emoji src='/images/emoji/15.png' />
+              <Emoji src='/images/emoji/16.png' />
+              <Emoji src='/images/emoji/17.png' />
+              <Emoji src='/images/emoji/18.png' />
+              <Emoji src='/images/emoji/19.png' />
+              <Emoji src='/images/emoji/20.png' />
+            </InputContainer>
+          </div>
+        </Slider>
+      </div>
       
-      <InputContainer>
-        <Message onClick={handleClickMessage}>안녕하세요!</Message>
-        <Message onClick={handleClickMessage}>반가워요</Message>
-        <Message onClick={handleClickMessage}>행운을 빌어요</Message>
-        <Message onClick={handleClickMessage}>오늘도 화이팅!</Message>
-        <Message onClick={handleClickMessage}>고마워요</Message>
-        <Message onClick={handleClickMessage}>힘내요TT</Message>
-        <Message onClick={handleClickMessage}>^3^</Message>
-        <Message onClick={handleClickMessage}>다 잘될거에요</Message>
-        <Message onClick={handleClickMessage}>너무 피곤해요ㅜ</Message>
-        <Message onClick={handleClickMessage}>잘있어요</Message>
-        <Message onClick={handleClickMessage}>또 만나요</Message>
-        <Message onClick={handleClickMessage}>건강조심하세요!</Message>
-      </InputContainer>
+      
+        
+      
     </PageContainer>
   )
 }
+
+const Emoji = styled.img`
+  width: 115px;
+  height: 115px;
+  margin: 0 40px;
+`
 
 const Header = styled.div`
   display: flex;
@@ -139,7 +189,7 @@ const AvatarContainer = styled.div`
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 1008px;
   height: 1310px;
@@ -150,29 +200,16 @@ const PageContainer = styled.div`
 const InputContainer = styled.div`
   display: flex;
   width: 1008px;
-  flex:1;
+  height: 460px;
   border-top: 15px solid #FF6B6B;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 `
 
-const CountDown = styled.div`
+const CountdownContainer = styled.div`
   position: absolute;
-  display: flex;
   top: 250px;
   left: 430px;
-  border: 10px solid #707070;
-  border-radius: 50%;
-  width: 140px;
-  height:140px;
-  justify-content: center;
-  align-items: center;
-`
-
-const CountDownNumber = styled.div`
-  font-family: 'BMJUA';
-  font-size: 100px;
-  color: #707070;
 `
 
 export default Chat;

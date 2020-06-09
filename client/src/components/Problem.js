@@ -1,8 +1,10 @@
-import React from 'react'
-import {Button} from 'antd';
+import React from 'react';
 
-const Problem = ({problem, choice, setChoice, handleClickA, handleClickB}) => {
-
+const Problem = ({problem, station, socket, time}) => {
+  const room = 'quiz';
+  const handleClickChoice = (choice) => {
+    socket.emit('sendAnswer', {room, choice, station});
+  }
   return (
     <>
     {
@@ -10,8 +12,8 @@ const Problem = ({problem, choice, setChoice, handleClickA, handleClickB}) => {
       <div>
         <div>{problem.q}</div>
         <div>
-          <Button type={choice==='a' && 'primary'} onClick={handleClickA}>{problem.a}</Button>
-          <Button type={choice==='b' && 'primary'} onClick={handleClickB}>{problem.b}</Button>
+          <Button type={choice==='a' && 'primary'} onClick={handleClickChoice}>{problem.a}</Button>
+          <Button type={choice==='b' && 'primary'} onClick={handleClickChoice}>{problem.b}</Button>
         </div>
       </div>
     } 

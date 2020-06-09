@@ -12,16 +12,19 @@ import Result from './pages/Result';
 
 const App = () => {
   const [result, setResult] = useState([]);
+  const [choices, setChoices] = useState([]);
 
   return (
     <Router>
       <Route path="/:station" exact component={Start} />
       <Route path="/:station/select" component={Select} />
       <Route path="/:station/chat" component={Chat} />
-      <Route path="/:station/quiz" render={props => (<Quiz {...props} setResult={setResult}/>)} />
-      <Route path="/:station/result" render={props => (<Result {...props} result={result}/> )} />
+      <Route path="/:station/quiz" render={props => (<Quiz {...props} setResult={setResult} setChoices={setChoices}/>)} />
+      <Route path="/:station/result" render={props => (<Result {...props} result={result} choices={choices}/> )} />
     </Router>
   )
 }
+
+
 
 export default App;

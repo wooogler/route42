@@ -21,7 +21,7 @@ const ChatContainer = styled(ScrollToBottom)`
   display: flex;
   flex-direction: column;
   width: 1008px;
-  height: 650px;
+  height: 630px;
 `
 
 const ChatRow = styled.div`
