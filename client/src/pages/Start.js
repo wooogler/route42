@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 
 import AnimalIcon from '../components/AnimalIcon';
 import Message from '../components/Message';
+import Emoji from '../components/Emoji';
 
 let socket;
 
@@ -47,7 +48,11 @@ const Start = ({match}) => {
                 <AnimalIcon animal={message.user} size='350'/>
               </AnimalIconContainer>
               <MessageContainer>
-                <Message>{message.text}</Message>
+                {
+                  message.text.endsWith('.gif') ? 
+                  <Emoji file={message.text} size={200}/> :
+                  <Message>{message.text}</Message>
+                }
               </MessageContainer>
             </>
           }

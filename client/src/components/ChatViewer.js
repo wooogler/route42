@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Message from './Message';
 import ScrollToBottom from 'react-scroll-to-bottom'
+import Emoji from './Emoji';
 
 const ChatViewer = ({messages, station}) => {
   return (
@@ -9,7 +10,11 @@ const ChatViewer = ({messages, station}) => {
       {
         messages.map((message, i)=> (
           <ChatRow key={i} mine={station === message.station}>
-            <Message>{message.text}</Message>
+            {
+              message.text.endsWith('.gif') ? 
+              <Emoji file={message.text} size={140}/> :
+              <Message>{message.text}</Message>
+            }
           </ChatRow>
         ))
       }

@@ -9,6 +9,7 @@ import Message from '../components/Message';
 import CloseButton from '../components/CloseButton';
 import AnimalIcon from '../components/AnimalIcon';
 import Countdown from '../components/Countdown';
+import Emoji from '../components/Emoji';
 
 let socket;
 
@@ -74,6 +75,13 @@ const Chat = ({location, match}) => {
     }
   }, [message])
 
+  const handleClickEmoji = useCallback((emoji) => {
+    setMessage(emoji);
+    if(emoji) {
+      socket.emit('sendMessage', {room, message: emoji}, () => setMessage(''));
+    }
+  }, [message])
+
   const settings = {
     dots: true,
     arrows: false,
@@ -127,26 +135,15 @@ const Chat = ({location, match}) => {
           </div>
           <div>
             <InputContainer>
-              <Emoji src='/images/emoji/1.png' />
-              <Emoji src='/images/emoji/2.png' />
-              <Emoji src='/images/emoji/3.png' />
-              <Emoji src='/images/emoji/4.png' />
-              <Emoji src='/images/emoji/5.png' />
-              <Emoji src='/images/emoji/6.png' />
-              <Emoji src='/images/emoji/7.png' />
-              <Emoji src='/images/emoji/8.png' />
-              <Emoji src='/images/emoji/9.png' />
-              <Emoji src='/images/emoji/10.png' />
-              <Emoji src='/images/emoji/11.png' />
-              <Emoji src='/images/emoji/12.png' />
-              <Emoji src='/images/emoji/13.png' />
-              <Emoji src='/images/emoji/14.png' />
-              <Emoji src='/images/emoji/15.png' />
-              <Emoji src='/images/emoji/16.png' />
-              <Emoji src='/images/emoji/17.png' />
-              <Emoji src='/images/emoji/18.png' />
-              <Emoji src='/images/emoji/19.png' />
-              <Emoji src='/images/emoji/20.png' />
+            {
+              [...Array(20).keys()].map((num) => {
+                return (
+                  <EmojiContainer>
+                    <Emoji file={`${num+1}.gif`} onClick={handleClickEmoji} size={115}/>
+                  </EmojiContainer>
+                )
+              })
+            }
             </InputContainer>
           </div>
         </Slider>
@@ -159,10 +156,9 @@ const Chat = ({location, match}) => {
   )
 }
 
-const Emoji = styled.img`
-  width: 115px;
-  height: 115px;
-  margin: 0 40px;
+
+const EmojiContainer = styled.div`
+  margin: 0px 40px;
 `
 
 const Header = styled.div`
