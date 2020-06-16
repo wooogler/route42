@@ -16,7 +16,7 @@ const Box = styled.button`
   border: ${(props) => `${props.checked ? '30px solid #FF6B6B' : '0'}`};
   outline: 0;
   justify-content: center;
-  font-size: 100px;
+  font-size: 90px;
   font-family: 'BMJUA';
   word-break: keep-all;
 `

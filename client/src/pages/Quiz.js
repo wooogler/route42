@@ -10,6 +10,8 @@ import SelectBoxLeft from '../components/SelectBoxLeft';
 import SelectBoxRight from '../components/SelectBoxRight';
 import FailBoxLeft from '../components/FailBoxLeft';
 import FailBoxRight from '../components/FailBoxRight';
+import Background from '../components/Background';
+import BusInfo from '../components/BusInfo';
 
 let socket;
 
@@ -19,33 +21,31 @@ export const problems = [
   {q: '좋아하는 음악 장르는?', a: '발라드', b: '힙합'},
   {q: '당신의 성격은?', a: '외향적', b: '내향적'},
   {q: '아침밥은 먹나요?', a: '먹는다', b: '안먹는다'},
-  {q: '당신의 히어로는?', a: '아이언맨', b: '캡틴 아메리카'},
-  {q: '친구들과 놀러갈땐?', a: '노래방', b: 'PC방'},
   {q: '선택할 수 있다면?', a: '주 4일 근무', b: '하루 6시간 근무'},
   {q: '선호하는 책 형식은?', a: '소설', b: '수필'},
-  {q: '더 가보고 싶은 나라는?', a: '유럽', b: '미국'},
+  {q: '더 가고 싶은 나라는?', a: '유럽', b: '미국'},
 ]
 
 const Quiz = ({location, match, setResult, setChoices}) => {
   let history = useHistory();
   const {station} = match.params;
-  const ENDPOINT = 'localhost:5000';
+  const ENDPOINT = 'https://route42-server.herokuapp.com/';
   const [animal, setAnimal] = useState('');
   const [other, setOther] = useState(null);
-  const [arrival, setArrival] = useState('');
+  const [bus, setBus] = useState('');
   const [choice, setChoice] = useState('');
   const [marked, setMarked] = useState('');
   const [quizIndex, setQuizIndex] = useState(0);
-  const [time, setTime] = useState(13);
+  const [time, setTime] = useState(18);
   const [isQuiz, setIsQuiz] = useState(true);
   const room = 'quiz';
 
   useEffect(() => {
-    const {arrival, animal} = queryString.parse(location.search);
+    const {bus, animal} = queryString.parse(location.search);
 
     socket = io(ENDPOINT);
 
-    setArrival(arrival);
+    setBus(bus);
     setAnimal(animal);    
 
     socket.emit('join', {animal, room, station}, (error) => {
@@ -57,7 +57,7 @@ const Quiz = ({location, match, setResult, setChoices}) => {
     return () => {
       socket.disconnect();
     }
-  }, [ENDPOINT, location.search])
+  }, [ENDPOINT, location.search, station])
 
   useEffect(() => {
     socket.on('joined', (joinedUser) => {
@@ -68,7 +68,7 @@ const Quiz = ({location, match, setResult, setChoices}) => {
         })[0]
       );
     })
-  }, [])
+  }, [station])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -89,14 +89,14 @@ const Quiz = ({location, match, setResult, setChoices}) => {
     return () => {
       clearInterval(timer);
     }
-  }, [])
+  }, [station])
 
   useEffect(() => {
     
     if(time === 3) {
       setIsQuiz(false);
       if(choice==='') {
-        socket.emit('sendAnswer', {room, choice: 'a', station});
+        socket.emit('sendAnswer', {room, choice: '', station});
       }
     }
     if(time === -1) {
@@ -107,13 +107,13 @@ const Quiz = ({location, match, setResult, setChoices}) => {
       setChoices(state => [...state, choice]);
       setChoice('');
     }
-  }, [time])
+  }, [time, choice, marked, setChoices, setResult, station])
 
   useEffect(() => {
-    if(quizIndex === 10) {
-      history.push(`/${station}/result?animal=${animal}&arrival=${arrival}`);
+    if(quizIndex === 8) {
+      history.push(`/${station}/result?animal=${animal}&bus=${bus}`);
     }
-  }, [quizIndex]);
+  }, [quizIndex, animal, bus, history, station]);
   
   const handleClickA = () => {
     setChoice('a');
@@ -128,11 +128,35 @@ const Quiz = ({location, match, setResult, setChoices}) => {
 
   return (
     <PageContainer>
+      {
+        time > 8 &&
+        <Background>
+          {
+            time > 14 ?
+            <Instruction>
+              이제 서로를 알기 위한<br/>
+              간단한 게임을 진행해 볼게요!
+            </Instruction> :
+            time > 11 ? 
+            <Instruction>
+              <span style={{color: '#FF6B6B'}}>5</span>초 안에<br/>
+              둘 중 하나를 골라주세요
+            </Instruction> :
+            time > 8 ?
+            <FirstCountDown>
+              {time-8}
+            </FirstCountDown> :
+            null
+          }
+        </Background>
+      }
+      
       <Header>
         <AvatarContainer>
           {isQuiz && other?.animal && <AnimalIcon animal={other.animal} size='150'/>}
         </AvatarContainer>
         <CloseButton station={station}/>
+        <BusInfo bus={bus} min={'4'} />
         <AvatarContainer>
           {isQuiz && animal && <AnimalIcon animal={animal} size='150'/>}
         </AvatarContainer>
@@ -170,7 +194,7 @@ const Quiz = ({location, match, setResult, setChoices}) => {
           }
           <Success>성공!</Success>
         </SuccessContainer>
-        </> : 
+        </> : marked === '불일치' ?
         <>
         <FailContainer>
           <LeftContainer>
@@ -186,11 +210,34 @@ const Quiz = ({location, match, setResult, setChoices}) => {
           </RightContainer>
           <Fail>앗...</Fail>
         </FailContainer>
+        </> : 
+        <>
+        <FailContainer>
+          <Question>한 쪽에서 응답이 없네요;;</Question>
+        </FailContainer>
         </>
       }
     </PageContainer>
   )
 }
+
+const FirstCountDown = styled.div`
+  font-family: 'BMJUA';
+  font-size: 150px;
+  color: #FF6B6B;
+  margin-top : 450px;
+  line-height: 80px;
+  text-align: center;
+`
+
+const Instruction = styled.div`
+  font-family: 'BMJUA';
+  font-size: 60px;
+  color: #00BBFF;
+  margin-top : 450px;
+  line-height: 80px;
+  text-align: center;
+`
 
 const Fail = styled.div`
   position: absolute;
@@ -244,7 +291,7 @@ const Success = styled.button `
   border:0;
   outline:0;
   color: #FF6B6B;
-  font-size: 100px;
+  font-size: 70px;
   width: 300px;
   height: 300px;
   border: 10px solid #FF6B6B;

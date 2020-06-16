@@ -20,11 +20,12 @@ const Button = styled.button`
   border:0;
   outline:0;
   color: white;
-  font-size: 60px;
+  font-size: 40px;
   width: 150px;
   height: 150px;
   box-shadow: 8px 8px 10px rgba(0,0,0,0.16);
   font-family: 'BMJUA';
+  z-index: 100;
 `
 
 export default CloseButton;

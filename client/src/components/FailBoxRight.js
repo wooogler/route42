@@ -16,7 +16,7 @@ const Box = styled.button`
   border: 0;
   outline: 0;
   justify-content: center;
-  font-size: 100px;
+  font-size: 80px;
   font-family: 'BMJUA';
   word-break: keep-all;
 `

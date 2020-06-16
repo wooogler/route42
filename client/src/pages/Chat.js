@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import queryString from 'query-string';
 import io from 'socket.io-client';
@@ -10,6 +10,8 @@ import CloseButton from '../components/CloseButton';
 import AnimalIcon from '../components/AnimalIcon';
 import Countdown from '../components/Countdown';
 import Emoji from '../components/Emoji';
+import Background from '../components/Background';
+import BusInfo from '../components/BusInfo';
 
 let socket;
 
@@ -17,21 +19,20 @@ const Chat = ({location, match}) => {
   const {station} = match.params;
   let history = useHistory();
   const [animal, setAnimal] = useState('');
-  const [opAnimal, setOpAnimal] = useState('');
-  const [arrival, setArrival] = useState('');
+  const [bus, setBus] = useState('');
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState('');
   const [countdown, setCountdown] = useState(null);
   const [other, setOther] = useState(null);
+  const [inst, setInst] = useState(true);
   const room = 'chat';
-  const ENDPOINT = 'localhost:5000';
+  const ENDPOINT = 'https://route42-server.herokuapp.com/';
 
   useEffect(() => {
-    const {arrival, animal} = queryString.parse(location.search);
+    const {bus, animal} = queryString.parse(location.search);
 
     socket = io(ENDPOINT);
 
-    setArrival(arrival);
+    setBus(bus);
     setAnimal(animal); 
 
     socket.emit('join', {animal, room, station}, (error) => {
@@ -43,7 +44,7 @@ const Chat = ({location, match}) => {
     return () => {
       socket.disconnect();
     }
-  }, [ENDPOINT, location.search])
+  }, [ENDPOINT, location.search, station])
 
   useEffect(() => {
     socket.on('message', (message) => {
@@ -60,27 +61,28 @@ const Chat = ({location, match}) => {
         })[0]
       );
     })
-  }, [])
+    setTimeout(() => {
+      setInst(false);
+    }, 5000)
+  }, [station])
 
   useEffect(() => {
     if(countdown === 0){
-      history.push(`/${station}/quiz?animal=${animal}&arrival=${arrival}`);
+      history.push(`/${station}/quiz?animal=${animal}&bus=${bus}`);
     }
-  }, [countdown])
+  }, [countdown, station, animal, history, bus])
 
-  const handleClickMessage = useCallback((text) => {
-    setMessage(text);
+  const handleClickMessage = (text) => {
     if(text) {
-      socket.emit('sendMessage', {room, message:text}, () => setMessage(''));
+      socket.emit('sendMessage', {room, message:text}, () => {});
     }
-  }, [message])
+  }
 
-  const handleClickEmoji = useCallback((emoji) => {
-    setMessage(emoji);
+  const handleClickEmoji = (emoji) => {
     if(emoji) {
-      socket.emit('sendMessage', {room, message: emoji}, () => setMessage(''));
+      socket.emit('sendMessage', {room, message: emoji}, () => {});
     }
-  }, [message])
+  }
 
   const settings = {
     dots: true,
@@ -93,6 +95,35 @@ const Chat = ({location, match}) => {
 
   return (
     <PageContainer>
+      {
+        !countdown && inst &&
+        <Background>
+          <Instruction>
+            급히 종료를 해야할 경우<br/>
+            위의 버튼을 눌러주세요.
+          </Instruction>
+          <Instruction>
+            연결중입니다...<br/><br/>
+            관심을 끌기 위해 채팅을 보내보세요! <br/>
+            다른 정류소에 보여집니다.
+          </Instruction>
+        </Background>
+      }
+      {
+        countdown && countdown>30 && 
+        <Background>
+          <Instruction>
+            급히 종료를 해야할 경우<br/>
+            위의 버튼을 눌러주세요.
+          </Instruction>
+          <div style={{height: '100px'}}/>
+          {other?.animal && <AnimalIcon animal={other.animal} size='300'/>}
+          <Instruction>
+            다른 정류소에서 응답이 왔어요!<br/>
+            <span style={{color: '#FF6B6B'}}>30초</span> 동안 인사를 나눠보세요
+          </Instruction>
+        </Background>
+      }
       <Header>
         <AvatarContainer>
         {
@@ -100,6 +131,7 @@ const Chat = ({location, match}) => {
         }
         </AvatarContainer>
         <CloseButton station={station}/>
+        <BusInfo bus={bus} min={'5'} />
         <AvatarContainer>
         {
           animal && <AnimalIcon animal={animal} size='150'/>
@@ -146,16 +178,33 @@ const Chat = ({location, match}) => {
             }
             </InputContainer>
           </div>
+          <div>
+            <InputContainer>
+              <Message onClick={handleClickMessage}>51번 버스</Message>
+              <Message onClick={handleClickMessage}>55번 버스</Message>
+              <Message onClick={handleClickMessage}>5001번 버스</Message>
+              <Message onClick={handleClickMessage}>8342번 버스</Message>
+              <Message onClick={handleClickMessage}>더 못 타요 ㅠㅠ</Message>
+              <Message onClick={handleClickMessage}>서서 타야해요 ㅠ</Message>
+              <Message onClick={handleClickMessage}>앉을 자리 있네요!</Message>
+              <Message onClick={handleClickMessage}>널널합니다!</Message>
+              <Message onClick={handleClickMessage}>아무도 없네요 ㅋ</Message>
+            </InputContainer>
+          </div>
         </Slider>
       </div>
-      
-      
-        
-      
     </PageContainer>
   )
 }
 
+const Instruction = styled.div`
+  font-family: 'BMJUA';
+  font-size: 60px;
+  color: #00BBFF;
+  margin-top : 140px;
+  line-height: 70px;
+  text-align: center;
+`
 
 const EmojiContainer = styled.div`
   margin: 0px 40px;

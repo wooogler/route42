@@ -1,34 +1,57 @@
 import React, {useState, useEffect} from 'react';
-import queryString from 'query-string';
 import {useHistory} from 'react-router-dom';
 import styled from 'styled-components';
+import queryString from 'query-string';
 
 import CloseButton from '../components/CloseButton';
 import ResultItem from '../components/ResultItem';
+import BusInfo from '../components/BusInfo';
 
-const Result = ({location, match, result, choices}) => {
+const Result = ({ match, result, choices, location}) => {
   const {station} = match.params;
   let history = useHistory();
-  const [animal, setAnimal] = useState('');
-  const [arrival, setArrival] = useState('');
+  const [isResult, setIsResult] = useState(true);
+  const [bus, setBus] = useState('');
+  const percent = (result.filter(item => item==='일치').length / 8 * 100).toFixed(1);
 
   useEffect(() => {
-    const {animal, arrival} = queryString.parse(location.search);  
-    setArrival(arrival);
-    setAnimal(animal);    
-  }, [location.search])
+    const {bus} = queryString.parse(location.search);
+    setBus(bus);
+    setTimeout(() => {
+      setIsResult(false);
+    }, 7000)
+  }, [bus, location])
+
+  useEffect(() => {
+    if(!isResult) {
+      history.push(`/${station}/qr`)
+    }
+  }, [isResult, history, station])
 
   return (
     <PageContainer>
       <Header>
-        <CloseButton/>
+        <CloseButton station={station}/>
+        <BusInfo bus={bus} min={'1'} />
       </Header>
       <PercentContainer>
-        <PercentNumber>{result.filter(item => item==='일치').length * 10}</PercentNumber>
+        <PercentNumber>{percent}</PercentNumber>
         <Percent>%</Percent>
         <Ilchi>일치</Ilchi>
       </PercentContainer>
-      <Review>혹시 지인...?</Review>
+      <Review>
+        {
+          percent > 90 ?
+          '와 100% 일치네요!' :
+          percent > 70 ?
+          '혹시 지인..?' : 
+          percent > 50 ?
+          '반 이상은 비슷한데요?' :
+          percent > 20 ? 
+          '좀 아쉽네요.. ㅠㅠ' :
+          '이렇게 안 맞을 수가... ㅠㅠ'
+        }
+      </Review>
       {
         choices.map((choice, index) => {
           return (

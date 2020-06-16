@@ -11,7 +11,7 @@ let socket;
 
 const Start = ({match}) => {
   const {station} = match.params;
-  const ENDPOINT = 'localhost:5000';
+  const ENDPOINT = 'https://route42-server.herokuapp.com/';
   const [message, setMessage] =useState('');
   const room = 'chat';
 
@@ -35,7 +35,7 @@ const Start = ({match}) => {
       setMessage(message);
     })
   }, [message]);
-  // TODO 채팅을 나갔을 때, 동물 사라지게 할 것
+  
   return (
     <Link to={`/${station}/select`} style={{textDecoration: 'none'}}>
       <PageContainer>
@@ -57,7 +57,7 @@ const Start = ({match}) => {
             </>
           }
           
-          <StationImage src='images/station1.png'></StationImage>
+          <StationImage src={station==='station1' ? 'images/station2.png' : 'images/station1.png'}></StationImage>
         </StationContainer>
         <KnockText>연결하시려면</KnockText>
         <KnockText>노크해주세요</KnockText>

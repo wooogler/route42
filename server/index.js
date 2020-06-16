@@ -27,15 +27,13 @@ io.on('connection', (socket) => {
       if(joinedUser.length===2 && 
         joinedUser[0].animal !== 'anonymous' && 
         joinedUser[1].animal !== 'anonymous') {
-        let count = 32;
+        let count = 38;
         countdown = setInterval(() => {
-          if(count==32) {
+          if(count==37) {
             io.to(room).emit('joined', joinedUser);
           }
-          if(count<=30){
-            console.log('count:', count);
-            io.to(room).emit('countdown', count);
-          }
+          io.to(room).emit('countdown', count);
+          console.log('count:', count);
           count = count - 1;
           if(count === -1) {
             clearInterval(countdown);

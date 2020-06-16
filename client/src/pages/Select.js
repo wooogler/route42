@@ -2,37 +2,37 @@ import React, {useState, useEffect} from 'react'
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import AnimalIcon from '../components/AnimalIcon';
-import ArrivalIcon from '../components/ArrivalIcon';
+import BusNumberIcon from '../components/BusNumberIcon';
 
 const Select = ({match}) => {
   let history = useHistory();
   const {station} = match.params;
-  const [arrival, setArrival] = useState('');
+  const [bus, setBus] = useState('');
   const [animal, setAnimal] = useState('');
-  const [time, setTime] = useState(0);
 
   useEffect(() => {
-    if(animal && arrival) {
+    if(animal && bus) {
       setTimeout(()=> {
-        history.push(`/${station}/chat?animal=${animal}&arrival=${arrival}`)
+        history.push(`/${station}/chat?animal=${animal}&bus=${bus}`)
       }, 1000)
     }
-  }, [animal, arrival])
+  }, [animal, bus, history, station])
 
-  const handleClickGangnam = () => setArrival('gangnam');
-  const handleClickSinnonhyeon = () => setArrival('sinnonhyeon');
+  const handleClickBus = (busNumber) => setBus(busNumber);
 
   const handleClickAnimal = (animal) => setAnimal(animal);
   
   return (
     <PageContainer>
-      <SelectText>어디로 가시나요?</SelectText>
-        <ArrivalContainer>
-          <ArrivalRow>
-            <ArrivalIcon checked={arrival==='gangnam'} onClick={handleClickGangnam} route={2} name='강남' color='#3CB44A'/>
-            <ArrivalIcon checked={arrival==='sinnonhyeon'} onClick={handleClickSinnonhyeon} route={9} name='신논현' color='#D1A62C'/>
-          </ArrivalRow>
-        </ArrivalContainer>
+      <SelectText>몇 번 버스를 타시나요?</SelectText>
+        <BusContainer>
+          <BusRow>
+            <BusNumberIcon checked={bus==='51'} onClick={handleClickBus} number={'51'} color='#48B01B'/>
+            <BusNumberIcon checked={bus==='55'} onClick={handleClickBus} number={'55'} color='#03AFBD'/>
+            <BusNumberIcon checked={bus==='5001'} onClick={handleClickBus} number={'5001'} color='#FF461E'/>
+            <BusNumberIcon checked={bus==='8342'} onClick={handleClickBus} number={'8342'} color='#7094E2'/>
+          </BusRow>
+        </BusContainer>
       <SelectText>동물로 당신을 표현해 주세요.</SelectText>
       <AnimalContainer>
         <AnimalRow>
@@ -65,7 +65,7 @@ const SelectText = styled.div`
   margin-bottom: 60px;
 `
 
-const ArrivalContainer = styled.div`
+const BusContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 720px;
@@ -78,7 +78,7 @@ const ArrivalContainer = styled.div`
   margin-bottom: 60px;
 `
 
-const ArrivalRow = styled.div`
+const BusRow = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-around;

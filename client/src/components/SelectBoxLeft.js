@@ -14,7 +14,7 @@ const Button = styled.button`
   background-color: #00BBFF;
   color: white;
   justify-content: center;
-  font-size: 100px;
+  font-size: 90px;
   border: ${(props) => `${props.checked ? '30px solid #FF6B6B' : '0'}`};
   outline: 0;
   font-family: 'BMJUA';
