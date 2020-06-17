@@ -15,7 +15,7 @@ const QR = ({match}) => {
         위의 QR코드를 스캔하세요!
       </Instruction>
       <Review>
-        주의) 출근 시간에 여기에서만 활성화됩니다. 
+        주의) 5분 이후엔 채팅방이 없어집니다!
       </Review>
     </PageContainer>
     
